@@ -13,7 +13,7 @@ The extension also offers a SQL query builder.
 
 It's recommended that you use [Composer](https://getcomposer.org/) to install Saq-Database.
 ```bash
-$ composer require piasiu/saq-db
+$ composer require piasiu/saq-database
 ```
 This will install Saq-Database and all required dependencies. Saq-Database requires PHP 8 or newer.
 
