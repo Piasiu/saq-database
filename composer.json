@@ -1,6 +1,6 @@
 {
     "name": "piasiu/saq-database",
-    "type": "extension",
+    "type": "library",
     "description": "Extension to the Saq framework for database support",
     "keywords": ["piasiu","saq","database","extension"],
     "homepage": "https://github.com/Piasiu/saq-database",
@@ -15,11 +15,13 @@
     "require": {
         "php": ">=8.0.0",
         "ext-pdo": "*",
-        "piasiu/saq-common": "dev-main"
+        "piasiu/saq": "dev-main"
     },
     "autoload": {
         "psr-4": {
             "Saq\\Database\\": "src"
         }
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
