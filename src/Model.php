@@ -26,7 +26,7 @@ class Model
      * Path to cache folder
      * @var string|null
      */
-    public static ?string $cache = null;
+    private static ?string $cachePath = null;
 
     /**
      * @var Property[]
@@ -266,11 +266,11 @@ class Model
 
     private function prepareProperties(): void
     {
-        if (self::$cache === null)
+        if (self::$cachePath === null)
         {
             $this->prepareFromModel();
         }
-        elseif (!file_exists(self::$cache))
+        elseif (!file_exists(self::$cachePath))
         {
             $this->prepareFromModel();
             $this->saveCache();
@@ -335,12 +335,12 @@ class Model
         }
 
         $json = json_encode($data);
-        file_put_contents(self::$cache, $json);
+        file_put_contents(self::$cachePath, $json);
     }
 
     private function prepareFromCache(): void
     {
-        $json = file_get_contents(self::$cache);
+        $json = file_get_contents(self::$cachePath);
         $data = json_decode($json, true);
         $this->map = $data['map'];
 
@@ -373,5 +373,20 @@ class Model
         $name .= self::NAME_SEPARATOR.self::ARRAY_IDENTIFIER;
         $name .= $subName ?? '';
         return $name;
+    }
+
+    /**
+     * @param string $path
+     */
+    public static function setCache(string $path): void
+    {
+        $path = dirname($path);
+
+        if (!file_exists($path))
+        {
+            mkdir($path, 0777, true);
+        }
+
+        self::$cachePath = $path;
     }
 }
