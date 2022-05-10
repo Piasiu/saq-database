@@ -270,7 +270,7 @@ class Model
         {
             $this->prepareFromModel();
         }
-        elseif (!file_exists(self::$cachePath))
+        elseif (!file_exists($this->getCacheFilePath()))
         {
             $this->prepareFromModel();
             $this->saveCache();
@@ -335,12 +335,12 @@ class Model
         }
 
         $json = json_encode($data);
-        file_put_contents(self::$cachePath, $json);
+        file_put_contents($this->getCacheFilePath(), $json);
     }
 
     private function prepareFromCache(): void
     {
-        $json = file_get_contents(self::$cachePath);
+        $json = file_get_contents($this->getCacheFilePath());
         $data = json_decode($json, true);
         $this->map = $data['map'];
 
@@ -351,6 +351,15 @@ class Model
             $this->properties[$name] = $property;
             call_user_func([$this, $property->getSetter()], null);
         }
+    }
+
+    /**
+     * @return string
+     */
+    private function getCacheFilePath(): string
+    {
+        $name = str_replace('\\', '-', get_class($this));
+        return self::$cachePath.$name.'.json';
     }
 
     /**
@@ -380,13 +389,13 @@ class Model
      */
     public static function setCache(string $path): void
     {
-        $path = dirname($path);
+        $path = rtrim($path, DIRECTORY_SEPARATOR);
 
         if (!file_exists($path))
         {
             mkdir($path, 0777, true);
         }
 
-        self::$cachePath = $path;
+        self::$cachePath = $path.DIRECTORY_SEPARATOR;
     }
 }
