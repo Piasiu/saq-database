@@ -325,13 +325,13 @@ class Model
     private function saveCache(): void
     {
         $data = [
-            'map' => $this->map,
-            'properties' => []
+            $this->map,
+            []
         ];
 
         foreach ($this->properties as $name => $property)
         {
-            $data['properties'][$name] = [$property->getDbName(), $property->getModel()];
+            $data[1][$name] = [$property->getDbName(), $property->getModel()];
         }
 
         $json = json_encode($data);
@@ -342,9 +342,9 @@ class Model
     {
         $json = file_get_contents($this->getCacheFilePath());
         $data = json_decode($json, true);
-        $this->map = $data['map'];
+        $this->map = $data[0];
 
-        foreach ($data['properties'] as $name => $item)
+        foreach ($data[1] as $name => $item)
         {
             $property = new Property($item[0], $item[1]);
             $property->setMethods($name);
