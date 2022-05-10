@@ -41,7 +41,7 @@ class Model
     /**
      * @var array
      */
-    private array $extraData = [];
+    private array $otherData = [];
 
     /**
      * @param array $data
@@ -50,13 +50,13 @@ class Model
     public function __construct(array $data = [])
     {
         $this->prepareProperties();
-        $this->setData($data);
+        $this->setProperties($data);
     }
 
     /**
      * @param array $data
      */
-    public function setData(array $data): void
+    public function setProperties(array $data): void
     {
         foreach ($data as $name => $value)
         {
@@ -88,7 +88,7 @@ class Model
             }
             else
             {
-                $this->setExtraData($name, $value);
+                $this->setExtra($name, $value);
             }
         }
     }
@@ -120,7 +120,7 @@ class Model
         }
         elseif (strlen($subName) > 0)
         {
-            $data = $this->getExtraData($name, []);
+            $data = $this->getOther($name, []);
 
             if ($subName[0] === self::ARRAY_IDENTIFIER)
             {
@@ -139,11 +139,11 @@ class Model
                 $data[$subName] = $value;
             }
 
-            $this->setExtraData($name, $data);
+            $this->setExtra($name, $data);
         }
         else
         {
-            $this->setExtraData($name, $value);
+            $this->setExtra($name, $value);
         }
     }
 
@@ -166,9 +166,7 @@ class Model
                     $rp = $rc->getProperty($name);
                     $property->setInitialized($rp->isInitialized($this));
                 }
-                catch (ReflectionException)
-                {
-                }
+                catch (ReflectionException) { }
             }
 
             if ($property->isInitialized())
@@ -193,7 +191,7 @@ class Model
 
         if ($withExtraData)
         {
-            return array_merge($data, $this->extraData);
+            return array_merge($data, $this->getOthers());
         }
 
         return $data;
@@ -203,9 +201,9 @@ class Model
      * @param string $name
      * @param mixed $value
      */
-    public function setExtraData(string $name, mixed $value): void
+    public function setExtra(string $name, mixed $value): void
     {
-        $this->extraData[$name] = $value;
+        $this->otherData[$name] = $value;
     }
 
     /**
@@ -213,9 +211,9 @@ class Model
      * @return bool
      */
     #[Pure]
-    public function hasExtraData(string $name): bool
+    public function hasOther(string $name): bool
     {
-        return array_key_exists($name, $this->extraData);
+        return array_key_exists($name, $this->otherData);
     }
 
     /**
@@ -224,17 +222,17 @@ class Model
      * @return mixed
      */
     #[Pure]
-    public function getExtraData(string $name, mixed $default = null): mixed
+    public function getOther(string $name, mixed $default = null): mixed
     {
-        return $this->hasExtraData($name) ? $this->extraData[$name] : $default;
+        return $this->hasOther($name) ? $this->otherData[$name] : $default;
     }
 
     /**
      * @return array
      */
-    public function getAllExtraData(): array
+    public function getOthers(): array
     {
-        return $this->extraData;
+        return $this->otherData;
     }
 
     /**
@@ -293,7 +291,6 @@ class Model
             foreach ($reflectionPropertyList as $reflectionProperty)
             {
                 $paList = $reflectionProperty->getAttributes(Property::class);
-                $plaList = $reflectionProperty->getAttributes(PropertyList::class);
 
                 if (count($paList) > 0)
                 {
@@ -322,9 +319,7 @@ class Model
                 }
             }
         }
-        catch (ReflectionException)
-        {
-        }
+        catch (ReflectionException) {}
     }
 
     private function saveCache(): void
