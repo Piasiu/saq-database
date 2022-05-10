@@ -30,20 +30,13 @@ abstract class Repository
     private Table $table;
 
     /**
-     * @var string
-     */
-    private string $prefixSeparator;
-
-    /**
      * @param AdapterInterface $adapter
      * @param ContainerInterface $container
-     * @param string $prefixSeparator
      */
-    public function __construct(AdapterInterface $adapter, ContainerInterface $container, string $prefixSeparator = '$')
+    public function __construct(AdapterInterface $adapter, ContainerInterface $container)
     {
         $this->container = $container;
         $this->adapter = $adapter;
-        $this->prefixSeparator = $prefixSeparator;
         $reflection = new ReflectionClass($this);
         $attributes = $reflection->getAttributes(Table::class);
 
@@ -137,6 +130,34 @@ abstract class Repository
     }
 
     /**
+     * @param array $conditions
+     * @return object|null
+     */
+    public function getModel(array $conditions): ?object
+    {
+        $row = $this->getOne($conditions);
+        return $this->table->getModel($row);
+    }
+
+    /**
+     * @param array $conditions
+     * @param int|null $limit
+     * @return object[]
+     */
+    public function getModels(array $conditions = [], ?int $limit = null): array
+    {
+        $rows = $this->getMany($conditions, $limit);
+        $models = [];
+
+        foreach ($rows as $row)
+        {
+            $models[] = $this->table->getModel($row);
+        }
+
+        return $models;
+    }
+
+    /**
      * @param string $class
      * @return Repository
      */
@@ -144,7 +165,7 @@ abstract class Repository
     {
         if (!$this->container->has($class))
         {
-            $this->container[$class] = new $class($this->adapter, $this->container, $this->prefixSeparator);
+            $this->container[$class] = new $class($this->adapter, $this->container);
         }
 
         return $this->container[$class];
@@ -164,7 +185,7 @@ abstract class Repository
      */
     protected function select(array $columns = []): SelectStatement
     {
-        return new SelectStatement($this->table, $columns, $this->prefixSeparator);
+        return new SelectStatement($this->table, $columns);
     }
 
     /**

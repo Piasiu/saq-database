@@ -3,6 +3,7 @@ namespace Saq\Database\Query;
 
 use JetBrains\PhpStorm\Pure;
 use RuntimeException;
+use Saq\Database\Model;
 use Saq\Database\Table;
 
 class SelectStatement extends Statement
@@ -50,22 +51,15 @@ class SelectStatement extends Statement
     private HavingClause $havingClause;
 
     /**
-     * @var string
-     */
-    private string $prefixSeparator;
-
-    /**
      * @param Table $table
      * @param array $columns
-     * @param string $prefixSeparator
      */
-    public function __construct(Table $table, array $columns = [], string $prefixSeparator = '$')
+    public function __construct(Table $table, array $columns = [])
     {
         parent::__construct($table);
         $this->columns($columns);
         $this->whereClause = new WhereClause();
         $this->havingClause = new HavingClause();
-        $this->prefixSeparator = $prefixSeparator;
     }
 
     /**
@@ -258,7 +252,7 @@ class SelectStatement extends Statement
 
         if (count($prefixes) > 0)
         {
-            $prefix = implode($this->prefixSeparator, $prefixes).$this->prefixSeparator;
+            $prefix = implode(Model::NAME_SEPARATOR, $prefixes).Model::NAME_SEPARATOR;
         }
 
         if (!isset($this->columns[$tableAlias]))

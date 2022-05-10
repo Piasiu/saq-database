@@ -17,13 +17,20 @@ class Table
     private string $alias;
 
     /**
+     * @var string|null
+     */
+    private ?string $model;
+
+    /**
      * @param string $name
      * @param string|null $alias
+     * @param string|null $model
      */
-    public function __construct(string $name, ?string $alias = null)
+    public function __construct(string $name, ?string $alias = null, ?string $model = null)
     {
         $this->name = $name;
         $this->alias = $alias === null ? $name : $alias;
+        $this->model = $model;
     }
 
     /**
@@ -40,5 +47,27 @@ class Table
     public function getAlias(): string
     {
         return $this->alias;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasModel(): bool
+    {
+        return $this->model !== null;
+    }
+
+    /**
+     * @param array $data
+     * @return mixed
+     */
+    public function getModel(array $data): mixed
+    {
+        if ($this->hasModel())
+        {
+            return new $this->model($data);
+        }
+
+        return null;
     }
 }
