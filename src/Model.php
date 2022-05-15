@@ -308,7 +308,15 @@ class Model
                     }
 
                     $this->properties[$name] = $property;
-                    call_user_func([$this, $property->getSetter()], null);
+
+                    if ($property->isList())
+                    {
+                        call_user_func([$this, $property->getSetter()], []);
+                    }
+                    else
+                    {
+                        call_user_func([$this, $property->getSetter()], null);
+                    }
                 }
             }
         }
