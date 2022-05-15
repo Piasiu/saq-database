@@ -74,7 +74,7 @@ class Model
 
         if (isset($parts[1]))
         {
-            $this->setModelProperty($parts[0], $parts[1], $value);
+            $this->setComplexProperty($parts[0], $parts[1], $value);
         }
         else
         {
@@ -83,11 +83,17 @@ class Model
             if (isset($this->properties[$name]))
             {
                 $property = $this->properties[$name];
+
+                if ($property->isList())
+                {
+                    $value = explode(',', $value);
+                }
+
                 call_user_func([$this, $property->getSetter()], $value);
             }
             else
             {
-                $this->setExtra($name, $value);
+                $this->setOther($name, $value);
             }
         }
     }
@@ -97,7 +103,7 @@ class Model
      * @param string $subName
      * @param mixed $value
      */
-    private function setModelProperty(string $name, string $subName, mixed $value): void
+    private function setComplexProperty(string $name, string $subName, mixed $value): void
     {
         $name = $this->mapToPropertyName($name);
 
@@ -137,11 +143,11 @@ class Model
                 $data[$subName] = $value;
             }
 
-            $this->setExtra($name, $data);
+            $this->setOther($name, $data);
         }
         else
         {
-            $this->setExtra($name, $value);
+            $this->setOther($name, $value);
         }
     }
 
@@ -188,7 +194,7 @@ class Model
      * @param string $name
      * @param mixed $value
      */
-    public function setExtra(string $name, mixed $value): void
+    public function setOther(string $name, mixed $value): void
     {
         $this->otherData[$name] = $value;
     }
