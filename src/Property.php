@@ -12,11 +12,6 @@ class Property
     private ?string $dbName;
 
     /**
-     * @var bool
-     */
-    private bool $initialized = false;
-
-    /**
      * @var string|null
      */
     private ?string $model;
@@ -24,7 +19,7 @@ class Property
     /**
      * @var bool
      */
-    private bool $isList = false;
+    private bool $isList;
 
     /**
      * @var string|null
@@ -89,23 +84,6 @@ class Property
     public function isList(): bool
     {
         return $this->isList;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isInitialized(): bool
-    {
-        return $this->initialized;
-    }
-
-    /**
-     * @param bool $initialized
-     * @return void
-     */
-    public function setInitialized(bool $initialized): void
-    {
-        $this->initialized = $initialized;
     }
 
     /**

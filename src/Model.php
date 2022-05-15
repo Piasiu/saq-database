@@ -83,7 +83,6 @@ class Model
             if (isset($this->properties[$name]))
             {
                 $property = $this->properties[$name];
-                $property->setInitialized(true);
                 call_user_func([$this, $property->getSetter()], $value);
             }
             else
@@ -109,7 +108,6 @@ class Model
 
             if ($model === null)
             {
-                $property->setInitialized(true);
                 $class = $property->getModel();
                 /** @var Model $model */
                 $model = new $class();
@@ -155,24 +153,13 @@ class Model
     public function asArray(bool $withDbNames = false, bool $withExtraData = false): array
     {
         $data = [];
-        $rc = new ReflectionClass($this);
 
         foreach ($this->properties as $name => $property)
         {
-            if (!$property->isInitialized())
-            {
-                try
-                {
-                    $rp = $rc->getProperty($name);
-                    $property->setInitialized($rp->isInitialized($this));
-                }
-                catch (ReflectionException) { }
-            }
+            $value = call_user_func([$this, $property->getGetter()]);
 
-            if ($property->isInitialized())
+            if ($value !== null)
             {
-                $value = call_user_func([$this, $property->getGetter()]);
-
                 if ($withDbNames)
                 {
                     $name = $property->getDbName();
@@ -180,7 +167,7 @@ class Model
 
                 if ($property->isModel())
                 {
-                    $data[$name] = $value->asArray();
+                    $data[$name] = $value->asArray($withDbNames, $withExtraData);
                 }
                 else
                 {
@@ -319,7 +306,7 @@ class Model
                 }
             }
         }
-        catch (ReflectionException) {}
+        catch (ReflectionException) { }
     }
 
     private function saveCache(): void
