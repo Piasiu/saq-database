@@ -84,7 +84,7 @@ class Model
             {
                 $property = $this->properties[$name];
 
-                if ($property->isList())
+                if ($property->isList() && !is_array($value))
                 {
                     $value = explode(',', $value);
                 }
