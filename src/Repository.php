@@ -103,6 +103,20 @@ abstract class Repository
     }
 
     /**
+     * @param string $columnName
+     * @param array $conditions
+     * @return int
+     */
+    public function getMax(string $columnName, array $conditions = []): int
+    {
+        $query = $this
+            ->select(['max' => new Expression("MAX({$columnName})")])
+            ->where($conditions);
+
+        return $this->getAdapter()->fetchOne($query);
+    }
+
+    /**
      * @param array $conditions
      * @return array
      */
