@@ -168,7 +168,7 @@ class Model
             {
                 if ($withDbNames)
                 {
-                    $name = $property->getDbName();
+                    $name = $property->getDbName() ?? $name;
                 }
 
                 if ($property->isModel())
