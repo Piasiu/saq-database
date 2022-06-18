@@ -99,7 +99,7 @@ abstract class Repository
             ->select(['count' => new Expression('COUNT(*)')])
             ->where($conditions);
 
-        return $this->getAdapter()->fetchOne($query);
+        return (int)$this->getAdapter()->fetchOne($query);
     }
 
     /**
@@ -113,7 +113,7 @@ abstract class Repository
             ->select(['max' => new Expression("MAX({$columnName})")])
             ->where($conditions);
 
-        return $this->getAdapter()->fetchOne($query);
+        return (int)$this->getAdapter()->fetchOne($query);
     }
 
     /**
