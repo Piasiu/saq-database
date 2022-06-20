@@ -172,6 +172,14 @@ abstract class Repository
     }
 
     /**
+     * @return Table
+     */
+    protected function getTable(): Table
+    {
+        return $this->table;
+    }
+
+    /**
      * @param string $class
      * @return Repository
      */
