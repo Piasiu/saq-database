@@ -40,9 +40,18 @@ interface AdapterInterface
      */
     function getLastInsertId(): int;
 
-    function beginTransaction(): void;
+    /**
+     * @return bool
+     */
+    function beginTransaction(): bool;
 
-    function commit(): void;
+    /**
+     * @return bool
+     */
+    function commit(): bool;
 
-    function rollBack(): void;
+    /**
+     * @return bool
+     */
+    function rollBack(): bool;
 }

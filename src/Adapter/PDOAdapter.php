@@ -90,25 +90,34 @@ class PDOAdapter implements AdapterInterface
     }
 
     /**
-     * @return int
+     * @inheritDoc
      */
     public function getLastInsertId(): int
     {
         return (int)$this->connection->lastInsertId();
     }
 
-    public function beginTransaction(): void
+    /**
+     * @inheritDoc
+     */
+    public function beginTransaction(): bool
     {
-        $this->connection->beginTransaction();
+        return $this->connection->beginTransaction();
     }
 
-    public function commit(): void
+    /**
+     * @inheritDoc
+     */
+    public function commit(): bool
     {
-        $this->connection->commit();
+        return $this->connection->commit();
     }
 
-    public function rollBack(): void
+    /**
+     * @inheritDoc
+     */
+    public function rollBack(): bool
     {
-        $this->connection->rollBack();
+        return $this->connection->rollBack();
     }
 }
