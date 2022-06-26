@@ -180,6 +180,14 @@ abstract class Repository
     }
 
     /**
+     * @return ContainerInterface
+     */
+    protected function getContainer(): ContainerInterface
+    {
+        return $this->container;
+    }
+
+    /**
      * @param string $class
      * @return Repository
      */
