@@ -154,9 +154,10 @@ class Model
     /**
      * @param bool $withDbNames
      * @param bool $withExtraData
+     * @param array $skipNames
      * @return array
      */
-    public function asArray(bool $withDbNames = false, bool $withExtraData = false): array
+    public function asArray(bool $withDbNames = false, bool $withExtraData = false, array $skipNames = []): array
     {
         $data = [];
 
@@ -164,7 +165,7 @@ class Model
         {
             $value = call_user_func([$this, $property->getGetter()]);
 
-            if ($value !== null)
+            if ($value !== null && !in_array($name, $skipNames))
             {
                 if ($withDbNames)
                 {
