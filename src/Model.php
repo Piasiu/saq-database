@@ -90,7 +90,7 @@ class Model
                     {
                         $value = explode(',', $value);
                     }
-                    else
+                    elseif (!is_array($value))
                     {
                         $value = [];
                     }
