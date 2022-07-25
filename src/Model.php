@@ -84,9 +84,16 @@ class Model
             {
                 $property = $this->properties[$name];
 
-                if ($property->isList() && is_string($value))
+                if ($property->isList())
                 {
-                    $value = explode(',', $value);
+                    if (is_string($value))
+                    {
+                        $value = explode(',', $value);
+                    }
+                    else
+                    {
+                        $value = [];
+                    }
                 }
 
                 call_user_func([$this, $property->getSetter()], $value);
