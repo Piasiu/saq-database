@@ -86,7 +86,7 @@ class Model
 
                 if ($property->isList())
                 {
-                    if (is_string($value))
+                    if (is_string($value) && strlen($value) > 0)
                     {
                         $value = explode(',', $value);
                     }
