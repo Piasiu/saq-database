@@ -183,10 +183,6 @@ class Model
                 {
                     $data[$name] = $value->asArray($withDbNames, $withExtraData);
                 }
-                elseif ($property->isList())
-                {
-                    $data[$name] = implode(',', $value);
-                }
                 else
                 {
                     $data[$name] = $value;
