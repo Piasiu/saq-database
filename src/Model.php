@@ -160,11 +160,11 @@ class Model
 
     /**
      * @param bool $withDbNames
-     * @param bool $withExtraData
+     * @param bool $withOtherData
      * @param array $skipNames
      * @return array
      */
-    public function asArray(bool $withDbNames = false, bool $withExtraData = false, array $skipNames = []): array
+    public function asArray(bool $withDbNames = false, bool $withOtherData = false, array $skipNames = []): array
     {
         $data = [];
 
@@ -181,7 +181,11 @@ class Model
 
                 if ($property->isModel())
                 {
-                    $data[$name] = $value->asArray($withDbNames, $withExtraData);
+                    $data[$name] = $value->asArray($withDbNames, $withOtherData);
+                }
+                elseif ($withDbNames && $property->isList())
+                {
+                    $data[$name] = implode(',', $value);
                 }
                 else
                 {
@@ -190,7 +194,7 @@ class Model
             }
         }
 
-        if ($withExtraData)
+        if ($withOtherData)
         {
             return array_merge($data, $this->getOthers());
         }
