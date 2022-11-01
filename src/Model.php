@@ -344,7 +344,7 @@ class Model
 
         foreach ($this->properties as $name => $property)
         {
-            $data[1][$name] = [$property->getDbName(), $property->getModel()];
+            $data[1][$name] = [$property->getDbName(), $property->getModel(), $property->isList()];
         }
 
         $json = json_encode($data);
@@ -359,10 +359,18 @@ class Model
 
         foreach ($data[1] as $name => $item)
         {
-            $property = new Property($item[0], $item[1]);
+            $property = new Property($item[0], $item[1], $item[2]);
             $property->setMethods($name);
             $this->properties[$name] = $property;
-            call_user_func([$this, $property->getSetter()], null);
+
+            if ($property->isList())
+            {
+                call_user_func([$this, $property->getSetter()], []);
+            }
+            else
+            {
+                call_user_func([$this, $property->getSetter()], null);
+            }
         }
     }
 
