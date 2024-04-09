@@ -53,12 +53,62 @@ abstract class Repository
     }
 
     /**
+     * @param array $columns
+     * @return SelectStatement
+     */
+    protected function select(array $columns = []): SelectStatement
+    {
+        return new SelectStatement($this->table, $columns);
+    }
+
+    /**
+     * @param string $tableName
+     * @param string|null $tableAlias
+     * @param array $columns
+     * @return SelectStatement
+     */
+    protected function selectFrom(string $tableName, ?string $tableAlias = null, array $columns = []): SelectStatement
+    {
+        $table = new Table($tableName, $tableAlias);
+        return new SelectStatement($table, $columns);
+    }
+
+    /**
+     * @param string[] $queries
+     * @param string|null $type
+     * @return string
+     */
+    #[Pure]
+    protected function union(array $queries, ?string $type = null): string
+    {
+        return new Union($queries, $type);
+    }
+
+    /**
      * @param array $data
      * @return int Last inserted ID.
      */
     public function insert(array $data): int
     {
         $query = new InsertStatement($this->table, $data);
+
+        if ($this->adapter->execute($query))
+        {
+            return $this->adapter->getLastInsertId();
+        }
+
+        return 0;
+    }
+
+    /**
+     * @param string $tableName
+     * @param array $data
+     * @return int Last inserted ID.
+     */
+    public function insertTo(string $tableName, array $data): int
+    {
+        $table = new Table($tableName);
+        $query = new InsertStatement($table, $data);
 
         if ($this->adapter->execute($query))
         {
@@ -80,12 +130,37 @@ abstract class Repository
     }
 
     /**
+     * @param string $tableName
+     * @param array $data
+     * @param array $conditions
+     * @return bool
+     */
+    public function updateTo(string $tableName, array $data, array $conditions = []): bool
+    {
+        $table = new Table($tableName);
+        $query = new UpdateStatement($table, $data, $conditions);
+        return $this->adapter->execute($query);
+    }
+
+    /**
      * @param array $conditions
      * @return bool
      */
     public function delete(array $conditions = []): bool
     {
         $query = new DeleteStatement($this->table, $conditions);
+        return $this->adapter->execute($query);
+    }
+
+    /**
+     * @param string $tableName
+     * @param array $conditions
+     * @return bool
+     */
+    public function deleteFrom(string $tableName, array $conditions = []): bool
+    {
+        $table = new Table($tableName);
+        $query = new DeleteStatement($table, $conditions);
         return $this->adapter->execute($query);
     }
 
@@ -207,37 +282,5 @@ abstract class Repository
     protected function getAdapter(): AdapterInterface
     {
         return $this->adapter;
-    }
-
-    /**
-     * @param array $columns
-     * @return SelectStatement
-     */
-    protected function select(array $columns = []): SelectStatement
-    {
-        return new SelectStatement($this->table, $columns);
-    }
-
-    /**
-     * @param string $tableName
-     * @param string|null $tableAlias
-     * @param array $columns
-     * @return SelectStatement
-     */
-    protected function selectFrom(string $tableName, ?string $tableAlias = null, array $columns = []): SelectStatement
-    {
-        $table = new Table($tableName, $tableAlias);
-        return new SelectStatement($table, $columns);
-    }
-
-    /**
-     * @param string[] $queries
-     * @param string|null $type
-     * @return string
-     */
-    #[Pure]
-    protected function union(array $queries, ?string $type = null): string
-    {
-        return new Union($queries, $type);
     }
 }

@@ -48,7 +48,14 @@ class ConditionCollection extends Value
     {
         foreach ($conditions as $condition => $value)
         {
-            $this->add($condition, $value);
+            if (!is_string($condition))
+            {
+                $this->add($value);
+            }
+            else
+            {
+                $this->add($condition, $value);
+            }
         }
     }
 
