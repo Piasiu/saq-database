@@ -2,6 +2,7 @@
 namespace Saq\Database\Query;
 
 use JetBrains\PhpStorm\Pure;
+use Stringable;
 
 class Union implements Stringable
 {

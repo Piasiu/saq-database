@@ -15,7 +15,6 @@ class DeleteStatement extends Statement
      * @param Table $table
      * @param array $conditions
      */
-    #[Pure]
     public function __construct(Table $table, array $conditions = [])
     {
         parent::__construct($table);

@@ -48,7 +48,7 @@ abstract class Repository
         }
         else
         {
-            throw new RuntimeException(sprintf('Repository class requires attribute %s.'), Table::class);
+            throw new RuntimeException(sprintf('Repository class requires attribute %s.', Table::class));
         }
     }
 
@@ -185,7 +185,7 @@ abstract class Repository
     public function getMax(string $columnName, array $conditions = []): int
     {
         $query = $this
-            ->select(['max' => new Expression("MAX({$columnName})")])
+            ->select(['max' => new Expression("MAX($columnName)")])
             ->where($conditions);
 
         return (int)$this->getAdapter()->fetchOne($query);

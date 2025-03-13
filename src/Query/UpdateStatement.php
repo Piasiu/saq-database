@@ -1,7 +1,6 @@
 <?php
 namespace Saq\Database\Query;
 
-use JetBrains\PhpStorm\Pure;
 use Saq\Database\Table;
 
 class UpdateStatement extends Statement
@@ -21,7 +20,6 @@ class UpdateStatement extends Statement
      * @param array $data
      * @param array $conditions
      */
-    #[Pure]
     public function __construct(Table $table, array $data, array $conditions = [])
     {
         parent::__construct($table);
